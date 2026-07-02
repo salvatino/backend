@@ -8,28 +8,36 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "signalements")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class Signalement {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @ManyToOne
+    @JoinColumn(name = "eleve_id") // Sans "nullable = false" pour permettre l'anonymat !
+    private Eleve eleve;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "type_abus", nullable = false)
     private TypeAbus typeAbus;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
+    @Column(nullable = false, columnDefinition = "TEXT")
     private String description;
 
-    @Column(name = "date_signalement")
-    private LocalDateTime dateSignalement = LocalDateTime.now();
+    @Column(name = "date_signalement", updatable = false)
+    private LocalDateTime dateSignalement;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private StatutSignalement statut = StatutSignalement.NON_LU;
 
-    @ManyToOne
-    @JoinColumn(name = "eleve_id")
-    private Eleve eleve; // Peut rester null si le signalement est fait de façon 100% anonyme
+    @PrePersist
+    protected void onCreate() {
+        this.dateSignalement = LocalDateTime.now();
+    }
 }

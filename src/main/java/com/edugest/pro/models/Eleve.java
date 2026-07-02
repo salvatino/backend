@@ -25,4 +25,8 @@ public class Eleve {
     @OneToOne(optional = false, cascade = CascadeType.ALL)
     @JoinColumn(name = "utilisateur_id", referencedColumnName = "id")
     private Utilisateur utilisateur;
+
+    @ManyToOne
+    @JoinColumn(name = "classe_id")
+    private Classe classe; // Lien vers la table classes
 }
