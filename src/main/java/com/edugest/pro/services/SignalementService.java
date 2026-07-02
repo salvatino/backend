@@ -7,21 +7,29 @@ import java.util.List;
 
 @Service
 public class SignalementService {
+
     private final SignalementRepository signalementRepository;
-    private final EmailService emailService;
 
-    public SignalementService(SignalementRepository signalementRepository, EmailService emailService) {
+    public SignalementService(SignalementRepository signalementRepository) {
         this.signalementRepository = signalementRepository;
-        this.emailService = emailService;
     }
 
-    public Signalement creerSignalement(Signalement s) {
-        Signalement sauf = signalementRepository.save(s);
-        emailService.envoyerAlerteAdministrateur(s.getDescription());
-        return sauf;
+    // Sauvegarder un nouveau signalement
+    public Signalement sauvegarder(Signalement signalement) {
+        return signalementRepository.save(signalement);
     }
 
-    public List<Signalement> recupererTousLesSignalements() {
-        return signalementRepository.findAll();
+    // Récupérer tous les signalements (en appliquant le filtre d'anonymat)
+    public List<Signalement> obtenirTousLesSignalements() {
+        List<Signalement> liste = signalementRepository.findAll();
+        
+        // Sécurité : si le signalement est marqué anonyme, on coupe le lien avec l'élève dans le JSON
+        liste.forEach(s -> {
+            if (s.isAnonyme()) {
+                s.setEleve(null);
+            }
+        });
+        
+        return liste;
     }
 }

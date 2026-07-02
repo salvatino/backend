@@ -40,4 +40,8 @@ public class Signalement {
     protected void onCreate() {
         this.dateSignalement = LocalDateTime.now();
     }
+
+    public boolean isAnonyme() {
+        return this.eleve == null;
+    }
 }
