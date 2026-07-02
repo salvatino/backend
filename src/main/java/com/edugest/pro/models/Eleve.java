@@ -22,7 +22,7 @@ public class Eleve {
 
     private String telephone;
 
-    @OneToOne(optional = false, cascade = CascadeType.ALL)
+    @OneToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "utilisateur_id", referencedColumnName = "id")
     private Utilisateur utilisateur;
 
