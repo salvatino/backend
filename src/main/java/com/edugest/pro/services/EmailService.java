@@ -4,8 +4,18 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class EmailService {
-    public void envoyerAlerteAdministrateur(String messageAbus) {
-        // Log de simulation d'envoi d'email d'urgence (Idéal démonstration Jury)
-        System.out.println("[EMAIL NOTIFICATION ADMIN] Alerte critique d'abus enregistrée : " + messageAbus);
+
+    // On retire le JavaMailSender pour éviter le blocage au démarrage
+    public EmailService() {
+    }
+
+    public void envoyerEmail(String to, String sujet, String contenu) {
+        // Simulation parfaite dans la console pour votre démonstration !
+        System.out.println("=================================================");
+        System.out.println("📧 [SIMULATION EMAIL SENT] via EduGest Pro");
+        System.out.println("À : " + to);
+        System.out.println("Sujet : " + sujet);
+        System.out.println("Contenu : " + contenu);
+        System.out.println("=================================================");
     }
 }

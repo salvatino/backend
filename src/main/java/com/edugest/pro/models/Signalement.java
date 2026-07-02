@@ -44,4 +44,9 @@ public class Signalement {
     public boolean isAnonyme() {
         return this.eleve == null;
     }
+
+    public String getTitre() {
+        
+        throw new UnsupportedOperationException("Unimplemented method 'getTitre'");
+    }
 }
