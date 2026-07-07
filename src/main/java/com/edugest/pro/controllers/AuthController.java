@@ -86,6 +86,7 @@ public class AuthController {
         // 3. Connexion réussie ! On renvoie les infos de l'utilisateur et un jeton fictif
         // (Ajuste les clés JSON si ton React attend d'autres noms, ex: accessToken)
         return ResponseEntity.ok(Map.of(
+            "id", user.getId(),
             "token", "fictif-jwt-token-pour-soutenance",
             "email", user.getEmail(),
             "role", user.getRole().name(),
