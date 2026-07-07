@@ -45,12 +45,13 @@ public class Utilisateur {
         this.motDePasse = motDePasse;
     }
 
-    public void setRole(String string) {
-        throw new UnsupportedOperationException("Unimplemented method 'setRole'");
+    public Role getRole(){
+        return this.role;
     }
 
-    public void setRole(Role eleve) {
-        throw new UnsupportedOperationException("Unimplemented method 'setRole'");
+    public void setRole(Role role) {
+        this.role = role;
     }
+
 }
 

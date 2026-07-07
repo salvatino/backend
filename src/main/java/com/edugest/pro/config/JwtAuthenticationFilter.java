@@ -13,7 +13,18 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        // En attendant l'implémentation complète des claims JWT si nécessaire
-        filterChain.doFilter(request, response);
+        
+        String requestURI = request.getRequestURI();
+        
+        // Si la requête concerne l'authentification, on passe directement au filtre suivant
+        if (requestURI.contains("/api/auth/")) {
+            filterChain.doFilter(request, response);
+            return; // On stoppe l'exécution ici pour cette route !
+        }
+
+        // ==========================================
+        // LE RESTE DE TON CODE ACTUEL RESTE ICI :
+        // (Extraction du Token, Validation, SecurityContextHolder...)
+        // ==========================================
     }
 }
