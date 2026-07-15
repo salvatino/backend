@@ -1,5 +1,6 @@
 package com.edugest.pro.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.edugest.pro.models.enums.TypeAbus;
 import com.edugest.pro.models.enums.StatutSignalement;
 import jakarta.persistence.*;
@@ -20,6 +21,7 @@ public class Signalement {
 
     @ManyToOne
     @JoinColumn(name = "eleve_id") // Sans "nullable = false" pour permettre l'anonymat !
+    @JsonIgnoreProperties({"signalements", "notes", "classe", "password"})
     private Eleve eleve;
 
     @Enumerated(EnumType.STRING)
@@ -46,7 +48,10 @@ public class Signalement {
     }
 
     public String getTitre() {
-        
-        throw new UnsupportedOperationException("Unimplemented method 'getTitre'");
+        String sujet = (this.typeAbus != null) ? this.typeAbus.name() : "INCIDENT";
+        if (this.isAnonyme()) {
+            return sujet + " (Déposé Anonymement)";
+        }
+        return sujet + " (Déposé par " + this.eleve.getNom() + " " + this.eleve.getPrenom() + ")";
     }
 }

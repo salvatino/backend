@@ -1,5 +1,6 @@
 package com.edugest.pro.services;
 
+import com.edugest.pro.models.enums.SequenceMinesec;
 import com.edugest.pro.models.Note;
 import com.edugest.pro.repositories.NoteRepository;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,6 @@ public class NoteService {
     }
 
     public List<Note> getAllNotes() { return noteRepository.findAll(); }
-    public List<Note> getNotesByEleve(Long eleveId) { return noteRepository.findByEleveId(eleveId); }
+    public List<Note> getNotesByEleve(Long eleveId, SequenceMinesec sequence) { return noteRepository.findByEleveIdAndSequence(eleveId, sequence); }
     public Note saveNote(Note note) { return noteRepository.save(note); }
 }

@@ -1,5 +1,7 @@
 package com.edugest.pro.models;
 
+import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDate;
@@ -35,4 +37,17 @@ public class Eleve {
     @ManyToOne
     @JoinColumn(name = "classe_id")
     private Classe classe; // Lien vers la table classes
+
+    @OneToMany(mappedBy = "eleve")
+    @JsonIgnore
+    private List<Signalement> signalements;
+
+    // 🇨🇲 Passerelles vers Utilisateur pour simplifier l'accès au nom et prénom
+    public String getNom() {
+        return (this.utilisateur != null) ? this.utilisateur.getNom() : "Nom inconnu";
+    }
+
+    public String getPrenom() {
+        return (this.utilisateur != null) ? this.utilisateur.getPrenom() : "Prénom inconnu";
+    }
 }

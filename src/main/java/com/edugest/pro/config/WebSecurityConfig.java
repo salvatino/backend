@@ -2,15 +2,17 @@ package com.edugest.pro.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+// import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 
@@ -27,19 +29,34 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-            // 1. Utilise le filtre CORS personnalisé défini plus bas (syntaxe moderne Spring Boot 3+)
-            .cors(cors -> cors.configure(http))
+            // 1. Définir explicitement la politique CORS en premier
+            .cors(cors -> cors.configurationSource(corsConfigurationSource()))
             
-            // 2. Désactivation de CSRF (nécessaire pour les API REST stateless)
+            // 2. Désactiver le CSRF (impératif pour Axios / REST JWT)
             .csrf(csrf -> csrf.disable())
             
-            // 3. Gestion des autorisations des requêtes HTTP
+            // 3. Configurer les autorisations de manière stricte
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/api/auth/**").permitAll() // Accès libre total pour login/register
-                .anyRequest().authenticated()                // Tout le reste nécessite un token valide
+                // 1. Accès libre pour login/register
+                .requestMatchers("/api/auth/**").permitAll() 
+                
+                // 2. Signalements (Accès libre / anonyme)
+                .requestMatchers(HttpMethod.POST, "/api/signalements").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/signalements/**").permitAll()
+                
+                // 🎯 CORRECTION : Accès libre temporaire pour tester la saisie des notes sans blocage JWT
+                .requestMatchers("/api/notes/**").permitAll()
+                
+                // 3. Tout le reste requiert d'être authentifié
+                .anyRequest().authenticated() 
+            )
+            
+            // 4. Rendre la session Stateless (Gestion par Token uniquement)
+            .sessionManagement(session -> session
+                .sessionCreationPolicy(org.springframework.security.config.http.SessionCreationPolicy.STATELESS)
             );
 
-        // 4. Injection du filtre JWT avant le filtre d'authentification classique
+        // 5. Placer ton filtre JWT juste avant le filtre d'authentification standard
         http.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
@@ -51,16 +68,15 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public CorsFilter corsFilter() {
+    public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration config = new CorsConfiguration();
         config.setAllowCredentials(true);
-        // Ajout des origines de dev (3000 pour ton React localisé sur C:)
         config.setAllowedOrigins(Arrays.asList("http://localhost:3000", "http://localhost:5173", "http://localhost:4200"));
-        config.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization"));
-        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+        config.setAllowedHeaders(Arrays.asList("Origin", "Content-Type", "Accept", "Authorization", "Cache-Control", "Pragma", "Expires"));
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")); 
         
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", config);
-        return new CorsFilter(source);
+        return source;
     }
 }

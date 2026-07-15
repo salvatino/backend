@@ -32,4 +32,9 @@ public class Cours {
 
     @Column(name = "volume_horaire", nullable = false)
     private Integer volumeHoraire;
+
+    // 🇨🇲 Passerelle pour récupérer le nom de la matière associée au cours
+    public String getNom() {
+        return (this.matiere != null) ? this.matiere.getNom() : "Matière inconnue";
+    }
 }

@@ -26,9 +26,35 @@ public class SignalementController {
     }
 
     // 2. L'administration consulte la liste des signalements
+    // 2. L'administration consulte la liste des signalements
     @GetMapping
     public ResponseEntity<List<Signalement>> getAll() {
         List<Signalement> signalements = signalementService.obtenirTousLesSignalements();
+        
+        // Sécurité supplémentaire : s'assurer que les signalements anonymes n'embarquent aucune trace
+        signalements.forEach(s -> {
+            if (s.isAnonyme()) {
+                s.setEleve(null);
+            }
+        });
+        
         return ResponseEntity.ok(signalements);
+    }
+
+    @GetMapping("/mon-historique/{eleveId}")
+    public ResponseEntity<List<Signalement>> getMonHistorique(@PathVariable Long eleveId) {
+        // Une méthode dans ton service qui fait un: return repository.findByEleveId(eleveId);
+        List<Signalement> mesSignalements = signalementService.obtenirParEleve(eleveId); 
+        return ResponseEntity.ok(mesSignalements);
+    }
+
+    // 4. Modifier le statut d'un signalement (ex: /api/signalements/5/statut?statut=EN_COURS)
+    @PatchMapping("/{id}/statut")
+    public ResponseEntity<Signalement> majStatut(
+            @PathVariable Long id, 
+            @RequestParam String statut) {
+        
+        Signalement misAJour = signalementService.changerStatut(id, statut);
+        return ResponseEntity.ok(misAJour);
     }
 }

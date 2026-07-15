@@ -9,6 +9,8 @@ import com.edugest.pro.repositories.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import com.edugest.pro.models.enums.SequenceMinesec;
+import com.edugest.pro.models.enums.Serie;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -39,8 +41,8 @@ public class DataInitializer {
             // COMPTE ADMINISTRATEUR
             // ========================================================
             Utilisateur admin = new Utilisateur();
-            admin.setNom("TCHAMENI");
-            admin.setPrenom("Samuel");
+            admin.setNom("METINO");
+            admin.setPrenom("Salvatoré");
             admin.setEmail("admin@edugest.pro");
             admin.setMotDePasse("admin123");
             admin.setRole(Role.ADMIN);
@@ -108,6 +110,7 @@ public class DataInitializer {
             eleveMarc.setClasse(tleC);
             eleveMarc.setMatricule("26EG001");
             eleveMarc.setDateNaissance(LocalDate.of(2009, 5, 14));
+            eleveMarc.setSerie(Serie.SERIE_D);
             eleveMarc.setTelephone("+237677000000");
             eleveMarc = eleveRepository.save(eleveMarc);
 
@@ -120,7 +123,7 @@ public class DataInitializer {
             noteMaths.setCours(coursMathsTleC); // Correction : Lié au cours
             noteMaths.setValeur(BigDecimal.valueOf(14.50)); // Correction : Passage en BigDecimal
             noteMaths.setTypeNote(TypeNote.DEVOIR); // Alignement Enum
-            noteMaths.setTrimestre(1);
+            noteMaths.setSequence(SequenceMinesec.SEQ1); // Ou SEQUENCE_1 selon tes valeurs d'Enum
             noteRepository.save(noteMaths);
 
             Note noteInfo = new Note();
@@ -128,7 +131,7 @@ public class DataInitializer {
             noteInfo.setCours(coursInfoTleC); // Correction : Lié au cours
             noteInfo.setValeur(BigDecimal.valueOf(18.00)); // Correction : Passage en BigDecimal
             noteInfo.setTypeNote(TypeNote.EXAMEN); // Alignement Enum
-            noteInfo.setTrimestre(1);
+            noteInfo.setSequence(SequenceMinesec.SEQ1);
             noteRepository.save(noteInfo);
 
 

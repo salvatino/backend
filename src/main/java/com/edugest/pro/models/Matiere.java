@@ -17,4 +17,5 @@ public class Matiere {
 
     @Column(nullable = false, length = 100)
     private String nom; // Ex: Mathématiques, Informatique
+
 }
