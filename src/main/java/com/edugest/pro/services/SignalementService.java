@@ -66,4 +66,8 @@ public class SignalementService {
 
         return signalementRepository.save(signalement);
     }
+    
+    public void supprimerSignalement(Long id) {
+        signalementRepository.deleteById(id);
+    }
 }

@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/signalements")
@@ -56,5 +57,11 @@ public class SignalementController {
         
         Signalement misAJour = signalementService.changerStatut(id, statut);
         return ResponseEntity.ok(misAJour);
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> supprimer(@PathVariable Long id) {
+        signalementService.supprimerSignalement(id);
+        return ResponseEntity.ok(Map.of("message", "Signalement supprimé de l'historique."));
     }
 }
